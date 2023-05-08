@@ -20,6 +20,19 @@ const queueConfig: QueueConfig = {
   */
   default: 'main',
 
+	/*
+  |--------------------------------------------------------------------------
+  | Dashboard
+  |--------------------------------------------------------------------------
+  |
+  | Queue monitoring dashboard implemented based on bull-board.
+	| Run this dashboard using queue:dashboard"。
+  |
+  */
+  dashboard: {
+		port: Env.get('QUEUE_DASHBOARD_PORT', 3008),
+	}
+
   /*
   |--------------------------------------------------------------------------
   | Queue List

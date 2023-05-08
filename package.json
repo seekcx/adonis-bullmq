@@ -1,6 +1,6 @@
 {
   "name": "adonis-bullmq",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Queue system based on BullMQ for AdonisJS",
   "homepage": "https://github.com/seekcx/adonis-bullmq",
   "license": "MIT",
@@ -10,8 +10,14 @@
     "queue"
   ],
   "authors": [
-    { "name": "Romain Lanz", "email": "romain.lanz@setten.io" },
-    { "name": "Abel", "email": "abel@seek.cx" }
+    {
+      "name": "Romain Lanz",
+      "email": "romain.lanz@setten.io"
+    },
+    {
+      "name": "Abel",
+      "email": "abel@seek.cx"
+    }
   ],
   "main": "build/providers/QueueProvider.js",
   "files": [
@@ -32,12 +38,15 @@
     "prepublishOnly": "npm run build"
   },
   "peerDependencies": {
+    "@bull-board/api": ">= 5",
+    "@bull-board/express": ">= 5",
     "bullmq": ">= 3"
   },
   "devDependencies": {
     "@adonisjs/application": "^5.3.0",
     "@adonisjs/core": "^5.9.0",
     "@adonisjs/sink": "^5.4.2",
+    "@types/express": "^4.17.17",
     "copyfiles": "^2.4.1",
     "del-cli": "^4.0.1",
     "eslint": "^8.31.0",

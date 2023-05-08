@@ -18,6 +18,13 @@ declare module '@ioc:Adonis/Addons/Queue' {
 		default: string;
 
 		/**
+		 * Dashboard configuration
+		 */
+		dashboard: {
+			port: number;
+		};
+
+		/**
 		 * All Queue Configurations
 		 */
 		queues: Record<string, QueueOptions & WorkerOptions>;

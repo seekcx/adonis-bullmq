@@ -29,6 +29,16 @@ node ace configure adonis-bullmq
 
 and... Voilà!
 
+## Dashboard
+
+To use the dashboard, you need to execute the following command to install the required dependencies first.
+
+```bash
+npm install @bull-board/api @bull-board/express
+```
+
+Execute the `queue:dashboard` command to start the dashboard.
+
 ## Usage
 
 The `Queue` provider gives you access to the `dispatch` method.
