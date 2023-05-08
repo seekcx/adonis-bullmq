@@ -26,7 +26,7 @@ const queueConfig: QueueConfig = {
   |--------------------------------------------------------------------------
   |
   | Queue monitoring dashboard implemented based on bull-board.
-	| Run this dashboard using queue:dashboard"。
+	| Run this dashboard using queue:dashboard
   |
   */
   dashboard: {
