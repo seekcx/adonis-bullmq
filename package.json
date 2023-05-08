@@ -61,12 +61,12 @@
   "adonisjs": {
     "instructions": "./build/instructions.js",
     "instructionsMd": "./build/instructions.md",
-    "types": "Adonis/Addons/Queue",
+    "types": "adonis-bullmq",
     "providers": [
-      "Adonis/Addons/Queue"
+      "adonis-bullmq"
     ],
     "commands": [
-      "Adonis/Addons/Queue/build/commands"
+      "adonis-bullmq/build/commands"
     ],
     "templates": {
       "basePath": "./build/templates",
