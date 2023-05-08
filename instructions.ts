@@ -22,6 +22,8 @@ export default async function instructions(
 	env.set('QUEUE_REDIS_HOST', 'localhost');
 	env.set('QUEUE_REDIS_PORT', '6379');
 	env.set('QUEUE_REDIS_PASSWORD', '');
+	env.set('QUEUE_REDIS_DB', 0);
+	env.set('QUEUE_DASHBOARD_PORT', 3008);
 	env.commit();
 	sink.logger.action('update').succeeded('.env,.env.example');
 }

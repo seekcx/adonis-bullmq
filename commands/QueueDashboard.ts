@@ -45,7 +45,9 @@ export default class QueueDashboard extends BaseCommand {
 
 		const port = config.get('queue.dashboard.port', 3008);
 		app.listen(port, () => {
-			this.logger.info(`${this.colors.cyan('BullMQ Dashboard')} Running on ${port}...`);
+			this.logger.info(
+				`${this.colors.cyan('BullMQ Dashboard')} Running on http://localhost:${port}`
+			);
 		});
 	}
 }
