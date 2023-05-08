@@ -1,4 +1,1 @@
-export default [
-	'Adonis/Addons/Queue/build/commands/QueueListen',
-	'Adonis/Addons/Queue/build/commands/MakeJob',
-];
+export default ['adonis-bullmq/build/commands/QueueListen', 'adonis-bullmq/build/commands/MakeJob'];

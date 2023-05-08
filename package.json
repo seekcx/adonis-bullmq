@@ -1,6 +1,6 @@
 {
   "name": "adonis-bullmq",
-  "version": "0.0.1",
+  "version": "0.0.7",
   "description": "Queue system based on BullMQ for AdonisJS",
   "homepage": "https://github.com/seekcx/adonis-bullmq",
   "license": "MIT",

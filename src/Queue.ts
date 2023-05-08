@@ -4,7 +4,7 @@ import type { LoggerContract } from '@ioc:Adonis/Core/Logger';
 import type { ApplicationContract } from '@ioc:Adonis/Core/Application';
 import type { DataForJob, JobsList, QueueConfig, JobContract } from '@ioc:Adonis/Addons/Queue';
 
-export class BullManager {
+export class QueueManager {
 	/**
 	 * Queue instances
 	 */
@@ -21,17 +21,6 @@ export class BullManager {
 	}
 
 	/**
-	 * 使用队列
-	 *
-	 * @param queueName 队列名称
-	 *
-	 * @returns 队列
-	 */
-	public use(queueName: string = this.config.defaultQueue) {
-		return this.queues[queueName];
-	}
-
-	/**
 	 * 分发任务
 	 *
 	 * @param job 名称
@@ -45,7 +34,14 @@ export class BullManager {
 		payload: DataForJob<K>,
 		options: JobsOptions & { queueName?: string } = {}
 	) {
-		return this.use(options.queueName).add(job, payload, options);
+		const queueName = options.queueName || this.config.default;
+		const queue = this.queues[queueName];
+
+		if (!queue) {
+			throw new Error(`Queue [${queueName}] not found`);
+		}
+
+		return queue.add(job, payload, options);
 	}
 
 	/**
@@ -63,7 +59,7 @@ export class BullManager {
 				let jobInstance: JobContract;
 
 				try {
-					jobInstance = this.app.container.make(job.name, [this.app]);
+					jobInstance = this.app.container.make(job.name);
 				} catch (e) {
 					this.logger.error(e, `Job handler for ${job.name} not found`);
 					return;
@@ -79,12 +75,7 @@ export class BullManager {
 					throw e;
 				}
 			},
-			{
-				connection: config.connection,
-				prefix: config.prefix,
-				sharedConnection: config.sharedConnection,
-				blockingConnection: config.blockingConnection,
-			}
+			config
 		);
 
 		worker.on('failed', async (job, error) => {
@@ -94,7 +85,7 @@ export class BullManager {
 			// This can occur if worker maxStalledCount has been reached and the removeOnFail is set to true.
 			if (job && (job.attemptsMade === job.opts.attempts || job.finishedOn)) {
 				// Call the failed method of the handler class if there is one
-				const jobInstance = this.app.container.make(job.name, [this.app]);
+				const jobInstance = this.app.container.make(job.name);
 				if (typeof jobInstance.failed === 'function') await jobInstance.failed();
 			}
 		});

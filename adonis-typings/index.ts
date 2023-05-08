@@ -15,36 +15,13 @@ declare module '@ioc:Adonis/Addons/Queue' {
 		/**
 		 * Default Queue Name
 		 */
-		defaultQueue: string;
+		default: string;
 
 		/**
 		 * All Queue Configurations
 		 */
 		queues: Record<string, QueueOptions & WorkerOptions>;
 	};
-
-	/**
-	 * Shape of the queue instance
-	 */
-	export default interface QueueContract {
-		/**
-		 * Dispatch a job to the queue
-		 *
-		 * @param name Job Name
-		 * @param payload Job Payload
-		 * @param options Job Options
-		 */
-		dispatch<K extends keyof JobsList>(
-			name: K,
-			payload: DataForJob<K>,
-			options?: JobsOptions
-		): Promise<string>;
-
-		/**
-		 * Process the queue
-		 */
-		listen(): Promise<void>;
-	}
 
 	/**
 	 * Shape of the job instance
@@ -67,4 +44,24 @@ declare module '@ioc:Adonis/Addons/Queue' {
 	 * An interface to define typed queues/jobs
 	 */
 	export interface JobsList {}
+
+	/**
+	 * Dispatch a job to the queue
+	 *
+	 * @param name Job Name
+	 * @param payload Job Payload
+	 * @param options Job Options
+	 */
+	export function dispatch<K extends keyof JobsList>(
+		name: K,
+		payload: DataForJob<K>,
+		options?: JobsOptions
+	): Promise<string>;
+
+	/**
+	 * Process the queue
+	 *
+	 * @param queueName Queue Name
+	 */
+	export function listen(queueName: string): Promise<void>;
 }

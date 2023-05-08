@@ -18,7 +18,7 @@ const queueConfig: QueueConfig = {
   | The default queue name must be one of the queues in the queue list.
   |
   */
-  defaultQueue: 'main',
+  default: 'main',
 
   /*
   |--------------------------------------------------------------------------
@@ -31,10 +31,10 @@ const queueConfig: QueueConfig = {
   queues: {
     main: {
       connection: {
-        host: Env.get('BUS_REDIS_HOST', 'localhost'),
-        port: Env.get('BUS_REDIS_PORT', 6379),
-        password: Env.get('BUS_REDIS_PASSWORD'),
-        db: Env.get('BUS_REDIS_DB', 0),
+        host: Env.get('QUEUE_REDIS_HOST', 'localhost'),
+        port: Env.get('QUEUE_REDIS_PORT', 6379),
+        password: Env.get('QUEUE_REDIS_PASSWORD'),
+        db: Env.get('QUEUE_REDIS_DB', 0),
       },
     },
   },

@@ -29,11 +29,11 @@ export default class QueueListen extends BaseCommand {
 	 * 运行脚本
 	 */
 	public async run() {
-		const { Manager } = this.application.container.resolveBinding('Adonis/Addons/Bus');
+		const { listen } = this.application.container.resolveBinding('Adonis/Addons/Queue');
 		const Config = this.application.container.resolveBinding('Adonis/Core/Config');
 
-		const queues = this.queue.length ? this.queue : [Config.get('bus.defaultQueue')];
+		const queues = this.queue.length ? this.queue : [Config.get('queue.default')];
 
-		await Promise.all(queues.map((name) => Manager.process(name)));
+		await Promise.all(queues.map((name) => listen(name)));
 	}
 }

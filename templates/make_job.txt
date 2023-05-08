@@ -1,9 +1,6 @@
 import type { JobContract, JobsList } from '@ioc:Adonis/Addons/Queue'
-import type { ApplicationContract } from '@ioc:Adonis/Core/Application'
 
 export default class implements JobContract {
-	constructor(private readonly app: ApplicationContract) {}
-
   /**
    * Base Entry point
    */
