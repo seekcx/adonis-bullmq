@@ -1,6 +1,6 @@
 {
   "name": "adonis-bullmq",
-  "version": "1.0.4",
+  "version": "1.0.6",
   "description": "Queue system based on BullMQ for AdonisJS",
   "homepage": "https://github.com/seekcx/adonis-bullmq",
   "license": "MIT",
@@ -40,6 +40,7 @@
   "peerDependencies": {
     "@bull-board/api": ">= 5",
     "@bull-board/express": ">= 5",
+    "express": ">= 4",
     "bullmq": ">= 3"
   },
   "devDependencies": {
