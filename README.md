@@ -18,7 +18,7 @@ for [AdonisJS](https://adonisjs.com/).
 This package is available in the npm registry.
 
 ```bash
-npm install adonis-bullmq
+npm install adonis-bullmq bullmq
 ```
 
 Next, configure the package by running the following command.

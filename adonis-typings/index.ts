@@ -37,7 +37,7 @@ declare module '@ioc:Adonis/Addons/Queue' {
 		/**
 		 * Handle the job failure
 		 */
-		failed(payload: any): Promise<void>;
+		failed?(payload: any): Promise<void>;
 	}
 
 	/**
