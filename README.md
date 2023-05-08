@@ -1,14 +1,10 @@
 <p align="center">
-  <img src="https://user-images.githubusercontent.com/2793951/179391203-e56db661-cc73-4932-aa77-b63be650c131.png" alt="@setten/bull-queue">
+  <a href="https://www.npmjs.com/package/adonis-bullmq"><img src="https://img.shields.io/npm/dm/adonis-bullmq.svg?style=flat-square" alt="Download"></a>
+  <a href="https://www.npmjs.com/package/adonis-bullmq"><img src="https://img.shields.io/npm/v/adonis-bullmq.svg?style=flat-square" alt="Version"></a>
+  <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/npm/l/adonis-bullmq.svg?style=flat-square" alt="License"></a>
 </p>
 
-<p align="center">
-  <a href="https://www.npmjs.com/package/@setten/bull-queue"><img src="https://img.shields.io/npm/dm/@setten/bull-queue.svg?style=flat-square" alt="Download"></a>
-  <a href="https://www.npmjs.com/package/@setten/bull-queue"><img src="https://img.shields.io/npm/v/@setten/bull-queue.svg?style=flat-square" alt="Version"></a>
-  <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/npm/l/@setten/bull-queue.svg?style=flat-square" alt="License"></a>
-</p>
-
-`@setten/bull-queue` is a queue system based on [BullMQ](https://github.com/taskforcesh/bullmq)
+`adonis-bullmq` is a queue system based on [BullMQ](https://github.com/taskforcesh/bullmq)
 for [AdonisJS](https://adonisjs.com/).
 
 > **Note**
@@ -22,13 +18,13 @@ for [AdonisJS](https://adonisjs.com/).
 This package is available in the npm registry.
 
 ```bash
-npm install @setten/bull-queue
+npm install adonis-bullmq
 ```
 
 Next, configure the package by running the following command.
 
 ```bash
-node ace configure @setten/bull-queue
+node ace configure adonis-bullmq
 ```
 
 and... Voilà!
@@ -39,7 +35,7 @@ The `Queue` provider gives you access to the `dispatch` method.
 It will dispatch the linked job to the queue with the given payload.
 
 ```ts
-import { Queue } from '@ioc:Setten/Queue';
+import { Queue } from '@ioc:Adonis/Addons/Queue';
 
 Queue.dispatch('App/Jobs/RegisterStripeCustomer', {...});
 
@@ -61,25 +57,21 @@ Example job file:
 
 ```ts
 // app/Jobs/RegisterStripeCustomer.ts
-import type { JobHandlerContract, Job } from '@ioc:Setten/Queue';
+import { JobContract, JobsList } from '@ioc:Adonis/Addons/Queue';
 
 export type RegisterStripeCustomerPayload = {
-  userId: string;
+	userId: string;
 };
 
-export default class RegisterStripeCustomer implements JobHandlerContract {
-  constructor(public job: Job) {
-    this.job = job;
-  }
+export default class implements JobContract {
+	public async handle(payload: JobsList['App/Jobs/TestJob']) {
+		// ...
+	}
 
-  public async handle(payload: RegisterStripeCustomerPayload) {
-    // ...
-  }
-
-  /**
-   * This is an optional method that gets called if it exists when the retries has exceeded and is marked failed.
-   */
-  public async failed() {}
+	/**
+	 * This is an optional method that gets called if it exists when the retries has exceeded and is marked failed.
+	 */
+	public async failed() {}
 }
 ```
 
@@ -147,9 +139,9 @@ You can define the payload's type for a given job inside the `contracts/queue.ts
 ```ts
 import type { RegisterStripeCustomerPayload } from 'App/Jobs/RegisterStripeCustomer';
 
-declare module '@ioc:Setten/Queue' {
-  interface JobsList {
-    'App/Jobs/RegisterStripeCustomer': RegisterStripeCustomerPayload;
-  }
+declare module '@ioc:Adonis/Addons/Queue' {
+	interface JobsList {
+		'App/Jobs/RegisterStripeCustomer': RegisterStripeCustomerPayload;
+	}
 }
 ```

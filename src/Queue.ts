@@ -86,7 +86,7 @@ export class QueueManager {
 			if (job && (job.attemptsMade === job.opts.attempts || job.finishedOn)) {
 				// Call the failed method of the handler class if there is one
 				const jobInstance = this.app.container.make(job.name);
-				if (typeof jobInstance.failed === 'function') await jobInstance.failed();
+				if (typeof jobInstance.failed === 'function') await jobInstance.failed(job.data);
 			}
 		});
 	}
