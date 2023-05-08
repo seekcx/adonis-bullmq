@@ -1,10 +1,3 @@
-/**
- * @setten/bull-queue
- *
- * @license MIT
- * @copyright Setten
- */
-
 import { join } from 'node:path';
 import { BaseCommand, args } from '@adonisjs/core/build/standalone';
 

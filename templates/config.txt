@@ -1,24 +1,43 @@
+import { QueueConfig } from '@ioc:Adonis/Addons/Queue'
 import Env from '@ioc:Adonis/Core/Env'
-import type { QueueConfig } from '@ioc:Setten/Queue'
 
+/*
+|--------------------------------------------------------------------------
+| Queue Config
+|--------------------------------------------------------------------------
+|
+| Queue configuration affects Jobs and Listeners.
+|
+*/
 const queueConfig: QueueConfig = {
-  connection: {
-    host: Env.get('QUEUE_REDIS_HOST'),
-    port: Env.get('QUEUE_REDIS_PORT'),
-    password: Env.get('QUEUE_REDIS_PASSWORD'),
+  /*
+  |--------------------------------------------------------------------------
+  | Default Queue Name
+  |--------------------------------------------------------------------------
+  |
+  | The default queue name must be one of the queues in the queue list.
+  |
+  */
+  defaultQueue: 'main',
+
+  /*
+  |--------------------------------------------------------------------------
+  | Queue List
+  |--------------------------------------------------------------------------
+  |
+  | The key name of the object is the queue name.
+  |
+  */
+  queues: {
+    main: {
+      connection: {
+        host: Env.get('BUS_REDIS_HOST', 'localhost'),
+        port: Env.get('BUS_REDIS_PORT', 6379),
+        password: Env.get('BUS_REDIS_PASSWORD'),
+        db: Env.get('BUS_REDIS_DB', 0),
+      },
+    },
   },
-
-  queue: {},
-
-  worker: {},
-
-  jobs: {
-    attempts: 3,
-    removeOnComplete: 100,
-    removeOnFail: 100
-  }
 }
 
-const queueNames:['default'] = ['default']
-
-export { queueConfig as config, queueNames}
+export default queueConfig

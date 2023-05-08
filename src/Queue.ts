@@ -1,79 +1,89 @@
-/**
- * @setten/bull-queue
- *
- * @license MIT
- * @copyright Setten - Romain Lanz <romain.lanz@setten.io>
- */
-
 import { Queue, Worker } from 'bullmq';
 import type { JobsOptions } from 'bullmq';
 import type { LoggerContract } from '@ioc:Adonis/Core/Logger';
 import type { ApplicationContract } from '@ioc:Adonis/Core/Application';
-import type { DataForJob, JobsList, QueueConfig } from '@ioc:Setten/Queue';
+import type { DataForJob, JobsList, QueueConfig, JobContract } from '@ioc:Adonis/Addons/Queue';
 
 export class BullManager {
-	private queues: Map<string, Queue> = new Map();
+	/**
+	 * Queue instances
+	 */
+	private queues: Record<string, Queue> = {};
 
 	constructor(
-		private options: QueueConfig,
+		private config: QueueConfig,
 		private logger: LoggerContract,
 		private app: ApplicationContract
 	) {
-		this.queues.set(
-			'default',
-			new Queue('default', {
-				connection: this.options.connection,
-				...this.options.queue,
-			})
-		);
+		for (const name in config.queues) {
+			this.queues[name] = new Queue(name, config.queues[name]);
+		}
 	}
 
+	/**
+	 * 使用队列
+	 *
+	 * @param queueName 队列名称
+	 *
+	 * @returns 队列
+	 */
+	public use(queueName: string = this.config.defaultQueue) {
+		return this.queues[queueName];
+	}
+
+	/**
+	 * 分发任务
+	 *
+	 * @param job 名称
+	 * @param payload 数据
+	 * @param options 选项
+	 *
+	 * @returns 任务实例
+	 */
 	public dispatch<K extends keyof JobsList | string>(
 		job: K,
 		payload: DataForJob<K>,
 		options: JobsOptions & { queueName?: string } = {}
 	) {
-		const queueName = options.queueName || 'default';
-
-		if (!this.queues.has(queueName)) {
-			this.queues.set(
-				queueName,
-				new Queue(queueName, {
-					connection: this.options.connection,
-					...this.options.queue,
-				})
-			);
-		}
-
-		return this.queues.get(queueName)!.add(job, payload, {
-			...this.options.jobs,
-			...options,
-		});
+		return this.use(options.queueName).add(job, payload, options);
 	}
 
-	public process({ queueName }: { queueName?: string }) {
-		this.logger.info(`Queue [${queueName || 'default'}] processing started...`);
+	/**
+	 * Listen for jobs
+	 *
+	 * @param queueName Queue Name
+	 */
+	public listen(queueName: string) {
+		this.logger.info(`Queue [${queueName}] processing started...`);
+		const config = this.config.queues[queueName];
 
-		let worker = new Worker(
-			queueName || 'default',
+		const worker = new Worker(
+			queueName,
 			async (job) => {
-				let jobHandler;
+				let jobInstance: JobContract;
 
 				try {
-					jobHandler = this.app.container.make(job.name, [job]);
+					jobInstance = this.app.container.make(job.name, [this.app]);
 				} catch (e) {
-					this.logger.error(`Job handler for ${job.name} not found`);
+					this.logger.error(e, `Job handler for ${job.name} not found`);
 					return;
 				}
 
 				this.logger.info(`Job ${job.name} started`);
 
-				await jobHandler.handle(job.data);
-				this.logger.info(`Job ${job.name} finished`);
+				try {
+					await jobInstance.handle(job.data);
+					this.logger.info(`Job ${job.name} finished`);
+				} catch (e) {
+					this.logger.error(e, `Job ${job.name} failed`);
+					throw e;
+				}
 			},
 			{
-				connection: this.options.connection,
-				...this.options.worker,
+				connection: config.connection,
+				prefix: config.prefix,
+				sharedConnection: config.sharedConnection,
+				blockingConnection: config.blockingConnection,
 			}
 		);
 
@@ -84,11 +94,9 @@ export class BullManager {
 			// This can occur if worker maxStalledCount has been reached and the removeOnFail is set to true.
 			if (job && (job.attemptsMade === job.opts.attempts || job.finishedOn)) {
 				// Call the failed method of the handler class if there is one
-				let jobHandler = this.app.container.make(job.name, [job]);
-				if (typeof jobHandler.failed === 'function') await jobHandler.failed();
+				const jobInstance = this.app.container.make(job.name, [this.app]);
+				if (typeof jobInstance.failed === 'function') await jobInstance.failed();
 			}
 		});
-
-		return this;
 	}
 }

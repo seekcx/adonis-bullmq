@@ -1,53 +1,70 @@
-/**
- * @setten/bull-queue
- *
- * @license MIT
- * @copyright Setten - Romain Lanz <romain.lanz@setten.io>
- */
+declare module '@ioc:Adonis/Addons/Queue' {
+	import type { WorkerOptions, QueueOptions, JobsOptions } from 'bullmq';
 
-declare module '@ioc:Setten/Queue' {
-	import type { ConnectionOptions, WorkerOptions, QueueOptions, JobsOptions, Job } from 'bullmq';
-
+	/**
+	 * Shape of the data for a given job
+	 */
 	export type DataForJob<K extends string> = K extends keyof JobsList
 		? JobsList[K]
 		: Record<string, unknown>;
 
-	export type DispatchOptions = JobsOptions & {
-		queueName?: 'default' | string
-	}
-
+	/**
+	 * Configuration for the queue
+	 */
 	export type QueueConfig = {
-		connection: ConnectionOptions;
-		queue: QueueOptions;
-		worker: WorkerOptions;
-		jobs: JobsOptions;
+		/**
+		 * Default Queue Name
+		 */
+		defaultQueue: string;
+
+		/**
+		 * All Queue Configurations
+		 */
+		queues: Record<string, QueueOptions & WorkerOptions>;
 	};
 
-	interface QueueContract {
+	/**
+	 * Shape of the queue instance
+	 */
+	export default interface QueueContract {
+		/**
+		 * Dispatch a job to the queue
+		 *
+		 * @param name Job Name
+		 * @param payload Job Payload
+		 * @param options Job Options
+		 */
 		dispatch<K extends keyof JobsList>(
-			job: K,
-			payload: DataForJob<K>,
-			options?: DispatchOptions
-		): Promise<string>;
-		dispatch<K extends string>(
-			job: K,
+			name: K,
 			payload: DataForJob<K>,
 			options?: JobsOptions
 		): Promise<string>;
-		process(): Promise<void>;
+
+		/**
+		 * Process the queue
+		 */
+		listen(): Promise<void>;
 	}
 
-	export interface JobHandlerContract {
-		handle(payload: any): Promise<void>
-		failed(): Promise<void>
+	/**
+	 * Shape of the job instance
+	 */
+	export interface JobContract {
+		/**
+		 * Handle the job
+		 *
+		 * @param payload Job Payload
+		 */
+		handle(payload: any): Promise<void>;
+
+		/**
+		 * Handle the job failure
+		 */
+		failed(payload: any): Promise<void>;
 	}
 
 	/**
 	 * An interface to define typed queues/jobs
 	 */
 	export interface JobsList {}
-
-	export const Queue: QueueContract;
-
-	export { Job }
 }

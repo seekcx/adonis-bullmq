@@ -1,19 +1,16 @@
-import type { JobHandlerContract, Job } from '@ioc:Setten/Queue'
+import type { JobContract, JobsList } from '@ioc:Adonis/Addons/Queue'
+import type { ApplicationContract } from '@ioc:Adonis/Core/Application'
 
-export type {{ name }}Payload = {}
-
-export default class implements JobHandlerContract {
-	constructor(public job: Job) {
-    this.job = job
-  }
+export default class implements JobContract {
+	constructor(private readonly app: ApplicationContract) {}
 
   /**
    * Base Entry point
    */
-  public async handle(payload: {{ name }}Payload) {}
+  public async handle(payload: JobsList['App/Jobs/{{ name }}']) {}
 
   /**
    * This is an optional method that gets called if it exists when the retries has exceeded and is marked failed.
    */
-  public async failed() {}
+  public async failed(payload: JobsList['App/Jobs/{{ name }}']) {}
 }

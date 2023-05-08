@@ -1,10 +1,3 @@
-/**
- * @setten/bull-queue
- *
- * @license MIT
- * @copyright Setten - Romain Lanz <romain.lanz@setten.io>
- */
-
 import { join } from 'node:path';
 import * as sinkStatic from '@adonisjs/sink';
 import type { ApplicationContract } from '@ioc:Adonis/Core/Application';
@@ -22,7 +15,7 @@ export default async function instructions(
 	const configPath = app.configPath('queue.ts');
 	new sink.files.MustacheFile(projectRoot, configPath, getStub('config.txt')).commit();
 	const configDir = app.directoriesMap.get('config') || 'config';
-	sink.logger.action('create').succeeded(`${configDir}/database.ts`);
+	sink.logger.action('create').succeeded(`${configDir}/queue.ts`);
 
 	// Setup environment
 	const env = new sink.files.EnvFile(projectRoot);
